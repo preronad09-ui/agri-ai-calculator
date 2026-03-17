@@ -1,1 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Agri Engineering AI Calculator</title>
 
+<style>
+body{
+font-family:Arial;
+background:linear-gradient(135deg,#0f172a,#1e293b);
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+margin:0;
+}
+
+.container{
+background:#1e293b;
+padding:25px;
+border-radius:12px;
+width:450px;
+text-align:center;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+h2{
+color:#22c55e;
+}
+
+select,input{
+width:90%;
+padding:10px;
+margin:6px;
+border-radius:6px;
+border:none;
+}
+
+button{
+background:#22c55e;
+border:none;
+padding:10px 15px;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:#16a34a;
+}
+
+#result{
+margin-top:15px;
+font-size:18px;
+}
+
+canvas{
+margin-top:15px;
+background:white;
+border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🌾 Agri Engineering AI Calculator</h2>
+
+<select id="calcType">
+<option value="soil">🌍 Soil Moisture</option>
+<option value="irrigation">💧 Irrigation Water</option>
+<option value="power">🚜 Farm Machinery Power</option>
+<option value="yield">🌱 Crop Yield</option>
+<option value="rain">🌧 Rainfall Intensity</option>
+<option value="eff">⚙️ Pump Efficiency</option>
+<option value="custom">🧠 Research Formula</option>
+</select>
+
+<input id="a" placeholder="Value A">
+<input id="b" placeholder="Value B">
+<input id="c" placeholder="Value C (optional)">
+<input id="formula" placeholder="Custom formula example: a*b/c">
+
+<button onclick="calculate()">Calculate</button>
+
+<select id="language">
+<option value="eng">English</option>
+<option value="ass">Assamese</option>
+<option value="hin">Hindi</option>
+</select>
+
+<div id="result"></div>
+
+<canvas id="graph" width="350" height="200"></canvas>
+
+</div>
+
+<script>
+
+function calculate(){
+
+let type=document.getElementById("calcType").value;
+let a=parseFloat(document.getElementById("a").value);
+let b=parseFloat(document.getElementById("b").value);
+let c=parseFloat(document.getElementById("c").value);
+
+let result;
+
+// 🔥 Input validation
+if(type !== "custom" && (isNaN(a) || isNaN(b))){
+document.getElementById("result").innerHTML="⚠️ Please enter valid numbers";
+return;
+}
+
+if(type==="soil"){
+result=((a-b)/b)*100;
+show(result,"Soil Moisture","মাটিৰ আৰ্দ্ৰতা","मृदा नमी");
+}
+
+else if(type==="irrigation"){
+result=a*b;
+show(result,"Water Requirement","পানীৰ প্ৰয়োজন","जल आवश्यकता");
+}
+
+else if(type==="power"){
+result=a*b;
+show(result,"Farm Power","খেতি শক্তি","कृषि शक्ति");
+}
+
+else if(type==="yield"){
+result=a*b;
+show(result,"Crop Yield","ফচল উৎপাদন","फसल उत्पादन");
+}
+
+else if(type==="rain"){
+result=a/b;
+show(result,"Rainfall Intensity","বৰষুণৰ তীব্ৰতা","वर्षा तीव्रता");
+}
+
+else if(type==="eff"){
+result=(a/b)*100;
+show(result,"Pump Efficiency","পাম্প কাৰ্যক্ষমতা","पंप दक्षता");
+}
+
+else if(type==="custom"){
+
+let formula=document.getElementById("formula").value;
+
+if(formula.trim()===""){
+document.getElementById("result").innerHTML="⚠️ Enter formula";
+return;
+}
+
+try{
+result=eval(formula);
+document.getElementById("result").innerHTML="📊 Result = "+result;
+drawGraph(result);
+return;
+}
+catch{
+document.getElementById("result").innerHTML="❌ Invalid Formula";
+return;
+}
+}
+
+drawGraph(result);
+}
+
+function show(value,eng,ass,hin){
+
+let lang=document.getElementById("language").value;
+
+if(isNaN(value)){
+document.getElementById("result").innerHTML="⚠️ Calculation error";
+return;
+}
+
+if(lang==="eng"){
+document.getElementById("result").innerHTML="✅ "+eng+" = "+value.toFixed(2);
+}
+
+if(lang==="ass"){
+document.getElementById("result").innerHTML="✅ "+ass+" = "+value.toFixed(2);
+}
+
+if(lang==="hin"){
+document.getElementById("result").innerHTML="✅ "+hin+" = "+value.toFixed(2);
+}
+
+}
+
+function drawGraph(value){
+
+let canvas=document.getElementById("graph");
+let ctx=canvas.getContext("2d");
+
+ctx.clearRect(0,0,350,200);
+
+if(isNaN(value)) return;
+
+// Limit graph overflow
+let x = Math.min(value*2, 340);
+let y = Math.max(10, 180 - value);
+
+ctx.beginPath();
+ctx.moveTo(10,180);
+ctx.lineTo(x,y);
+ctx.strokeStyle="green";
+ctx.lineWidth=2;
+ctx.stroke();
+
+}
+
+</script>
+
+</body>
+</html>
